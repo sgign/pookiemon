@@ -190,8 +190,8 @@ body {
 #card-stack {
   position: relative;
 
-  width: 250px;
-  height: 350px;
+  width: 280px;
+  height: 392px;
 
   perspective: 1200px;
 }
@@ -201,8 +201,8 @@ body {
 .reveal-card {
   position: absolute;
 
-  width: 250px;
-  height: 350px;
+  width: 280px;
+  height: 392px;
 
   left: 0;
   top: 0;
