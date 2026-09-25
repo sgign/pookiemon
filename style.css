@@ -1,0 +1,554 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(to bottom, #f7f5f5, #bed9ff);
+  min-height: 100vh;
+  font-family: sans-serif;
+  overflow: hidden;
+  color: rgb(75, 74, 133)
+}
+
+.screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+
+/* =========================
+   PACK SCREEN
+========================= */
+
+#pack-screen {
+  position: relative;
+}
+
+/* The pack itself */
+.pack {
+  position: relative;
+  width: 260px;
+  border-radius: 0;
+  cursor: pointer;
+
+  transform-style: preserve-3d;
+  perspective: 1000px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+
+  will-change: transform;
+}
+
+.pack img {
+  width: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+
+/* Rainbow holographic shine */
+.pack-shine {
+  position: absolute;
+  inset: -50%;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 25%,
+      rgba(255, 0, 0, 0.20) 35%,
+      rgba(255, 255, 0, 0.20) 42%,
+      rgba(0, 255, 255, 0.20) 50%,
+      rgba(0, 100, 255, 0.20) 58%,
+      rgba(255, 0, 255, 0.20) 66%,
+      transparent 75%
+    );
+
+  background-size: 200% 200%;
+
+  mix-blend-mode: screen;
+
+  transition: opacity 0.2s ease;
+}
+
+
+/* White light glare */
+.pack-glare {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.15) 25%,
+      transparent 65%
+    );
+
+  mix-blend-mode: overlay;
+
+  transition: opacity 0.2s ease;
+}
+
+
+/* Show shine when hovering */
+.pack:hover .pack-shine,
+.pack:hover .pack-glare {
+  opacity: 0.8;
+}
+
+
+.pack-instruction {
+  margin-top: 30px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+
+/* Pack shaking */
+.pack.shake {
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(4deg);
+  }
+
+  75% {
+    transform: rotate(-3deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+/* Pack opening */
+.pack.open {
+  animation: packOpen 0.8s ease forwards;
+}
+
+@keyframes packOpen {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.8) translateY(-100px);
+    opacity: 0;
+  }
+}
+
+
+/* =========================
+   CARD REVEAL
+========================= */
+
+#reveal-screen {
+  position: relative;
+}
+
+#card-stack {
+  position: relative;
+
+  width: 250px;
+  height: 350px;
+
+  perspective: 1200px;
+}
+
+
+/* Individual reveal cards */
+.reveal-card {
+  position: absolute;
+
+  width: 250px;
+  height: 350px;
+
+  left: 0;
+  top: 0;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  transform-style: preserve-3d;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.5s ease,
+    opacity 0.4s ease;
+}
+
+
+.reveal-card img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  pointer-events: none;
+}
+
+
+/* Card stacking */
+.card-1 {
+  z-index: 3;
+}
+
+.card-2 {
+  z-index: 2;
+  transform: translateY(5px) scale(0.97);
+}
+
+.card-3 {
+  z-index: 1;
+  transform: translateY(10px) scale(0.94);
+}
+
+
+/* Cards that have not been reached yet */
+.reveal-card.waiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* Card after being revealed */
+.reveal-card.revealed {
+  opacity: 0;
+
+  transform:
+    translateY(-300px)
+    scale(0.8)
+    rotate(10deg);
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   CARD HOLOGRAPHIC EFFECT
+========================= */
+
+.holo {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 0, 0, 0.35) 30%,
+      rgba(255, 255, 0, 0.35) 40%,
+      rgba(0, 255, 0, 0.35) 50%,
+      rgba(0, 255, 255, 0.35) 60%,
+      rgba(0, 0, 255, 0.35) 70%,
+      transparent 80%
+    );
+
+  background-size: 200% 200%;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  mix-blend-mode: color-dodge;
+
+  transition: opacity 0.2s ease;
+}
+
+
+/* White glare */
+.glare {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  mix-blend-mode: overlay;
+
+  transition: opacity 0.2s ease;
+}
+
+
+/* Only show holo when active */
+.reveal-card.active .holo,
+.reveal-card.active .glare,
+.deck-card.active .holo,
+.deck-card.active .glare {
+  opacity: 0.8;
+}
+
+
+/* Reveal text */
+#reveal-instruction {
+  margin-top: 35px;
+
+  font-size: 16px;
+
+  opacity: 0.8;
+}
+
+
+/* =========================
+   FINAL DECK
+========================= */
+
+#deck-screen {
+  gap: 30px;
+}
+
+#deck {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+
+  transition: opacity 0.3s ease;
+}
+
+
+/* Cards in final collection */
+.deck-card {
+  position: relative;
+
+  width: 200px;
+  height: 280px;
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transform-style: preserve-3d;
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    opacity 0.35s ease;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Card image */
+.deck-card img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   FINAL DECK HOLO
+========================= */
+
+.deck-card .holo {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 40%,
+      rgba(255, 0, 0, 0.20) 35%,
+      rgba(255, 255, 0, 0.20) 43%,
+      rgba(0, 255, 255, 0.20) 51%,
+      rgba(0, 100, 255, 0.20) 59%,
+      rgba(255, 0, 255, 0.20) 67%,
+      transparent 77%
+    );
+
+  background-size: 200% 200%;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  mix-blend-mode: color-dodge;
+
+  transition: opacity 0.25s ease;
+}
+
+
+/* White glare */
+.deck-card .glare {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  mix-blend-mode: overlay;
+
+  transition: opacity 0.25s ease;
+}
+
+
+/* Holo is slightly visible when inspecting */
+.deck-card.inspecting .holo,
+.deck-card.inspecting .glare {
+  opacity: 0.60;
+}
+
+
+/* =========================
+   INSPECTING A CARD
+========================= */
+
+/* Darken the other cards */
+#deck.has-inspected-card .deck-card:not(.inspecting) {
+  opacity: 0.25;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+
+/* Move selected card forward */
+.deck-card.inspecting {
+  position: relative;
+  z-index: 20;
+
+  width: 300px;
+  height: 420px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.8);
+
+  cursor: pointer;
+}
+
+
+/* Stronger holo while inspecting */
+.deck-card.inspecting .holo {
+  opacity: 0.65;
+}
+
+
+/* Stronger glare while inspecting */
+.deck-card.inspecting .glare {
+  opacity: 0.75;
+}
+
+
+/* =========================
+   INSPECTION BACKDROP
+========================= */
+
+#deck-screen::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0);
+
+  pointer-events: none;
+
+  transition: background 0.3s ease;
+
+  z-index: 0;
+}
+
+
+#deck-screen {
+  position: relative;
+}
+
+
+/* Put deck above backdrop */
+#deck {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Dark backdrop when inspecting */
+#deck-screen.inspecting-mode::before {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+
+/* Make title stay above backdrop */
+#deck-screen h1 {
+  position: relative;
+  z-index: 2;
+  opacity: 0.5;
+
+  transition: opacity 0.3s ease;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+  #deck {
+    gap: 8px;
+  }
+
+  .deck-card {
+    width: 29vw;
+    height: 41vw;
+  }
+
+  .deck-card.inspecting {
+    width: 72vw;
+    height: 101vw;
+  }
+
+}
