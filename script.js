@@ -205,7 +205,6 @@ function addTilt(card) {
 ========================= */
 
 function tiltCard(card, mouseX, mouseY) {
-
   const rect = card.getBoundingClientRect();
 
   const x = mouseX - rect.left;
@@ -214,56 +213,46 @@ function tiltCard(card, mouseX, mouseY) {
   const centerX = rect.width / 2;
   const centerY = rect.height / 2;
 
+  const rotateY = ((x - centerX) / centerX) * 14;
+  const rotateX = -((y - centerY) / centerY) * 14;
 
-  /* How much the card rotates */
-  const rotateY =
-    ((x - centerX) / centerX) * 14;
+  const percentX = (x / rect.width) * 100;
+  const percentY = (y / rect.height) * 100;
 
-  const rotateX =
-    -((y - centerY) / centerY) * 14;
+  const isMobile = window.innerWidth <= 700;
 
+  if (card.classList.contains("inspecting") && isMobile) {
+    card.style.transform =
+      `translate(-50%, -50%)
+       perspective(1000px)
+       rotateX(${rotateX}deg)
+       rotateY(${rotateY}deg)
+       scale(1.04)`;
+  } else {
+    card.style.transform =
+      `perspective(1000px)
+       rotateX(${rotateX}deg)
+       rotateY(${rotateY}deg)
+       scale(1.04)`;
+  }
 
-  /* Position for holographic effect */
-  const percentX =
-    (x / rect.width) * 100;
-
-  const percentY =
-    (y / rect.height) * 100;
-
-
-  /* Apply 3D rotation */
-  card.style.transform =
-    `perspective(1000px)
-     rotateX(${rotateX}deg)
-     rotateY(${rotateY}deg)
-     scale(1.04)`;
-
-
-  /* Move rainbow holo */
   const holo = card.querySelector(".holo");
 
   if (holo) {
-
     holo.style.backgroundPosition =
       `${percentX}% ${percentY}%`;
-
   }
 
-
-  /* Move white glare */
   const glare = card.querySelector(".glare");
 
   if (glare) {
-
     glare.style.background =
       `radial-gradient(
         circle at ${percentX}% ${percentY}%,
         rgba(255,255,255,0.5) 0%,
         rgba(255,255,255,0) 70%
       )`;
-
   }
-
 }
 
 
@@ -272,10 +261,15 @@ function tiltCard(card, mouseX, mouseY) {
 ========================= */
 
 function resetCard(card) {
+  const isMobile = window.innerWidth <= 700;
 
-  card.style.transform =
-    "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
-
+  if (card.classList.contains("inspecting") && isMobile) {
+    card.style.transform =
+      "translate(-50%, -50%) perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  } else {
+    card.style.transform =
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  }
 }
 
 
@@ -461,41 +455,22 @@ deckCards.forEach((card) => {
 ========================= */
 
 function inspectCard(card) {
-
-  /* Remove inspecting state from all cards */
-
   deckCards.forEach((otherCard) => {
-
     otherCard.classList.remove("inspecting");
-
   });
 
-
-  /* Mark selected card */
-
   card.classList.add("inspecting");
-
-
-  /* Tell deck that a card is being inspected */
-
   deck.classList.add("has-inspected-card");
-
-
-  /* Darken background */
-
   deckScreen.classList.add("inspecting-mode");
-
-
-  /* Remember which card is being inspected */
-
   inspectingCard = card;
 
-
-  /* Reset tilt */
-
-  card.style.transform =
-    "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
-
+  if (window.innerWidth <= 700) {
+    card.style.transform =
+      "translate(-50%, -50%) perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  } else {
+    card.style.transform =
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  }
 }
 
 
